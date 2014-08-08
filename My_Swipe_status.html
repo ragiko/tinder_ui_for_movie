@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+    <head>  
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+        
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet" />
+        <link href="css/main.css" type="text/css" rel="stylesheet" />
+        
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+        <script type="text/javascript" src="jquery.touchSwipe.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        
+        <title>touchSwipe</title>
+
+        <style>
+            .test-wrappers {
+                position: relative;
+            }
+
+            .test1-wrapper,
+            .test2-wrapper,
+            .test3-wrapper
+            {
+                position: absolute;
+            }
+
+            .test1-wrapper {
+                z-index: 1000;
+            }
+
+            .test2-wrapper {
+                z-index: 900;
+            }
+
+            
+            .test2-wrapper {
+                z-index: 800;
+            }
+            
+            .test-layer {
+                overflow: hidden;
+                height: 100%;
+                position: absolute;
+                width: 100%;
+                top: 0;
+                left: 0;
+            }
+        </style>
+
+    </head>
+    <body>
+		<div class="container">
+			
+			<script id='code_1'>
+
+                var tag = document.createElement('script');
+
+                tag.src = "https://www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                var player;
+                var player2;
+                var player3;
+                function onYouTubeIframeAPIReady() {
+                  player = new YT.Player('test1', {
+                    height: '315',
+                    width: '100%',
+                    videoId: 'XeWxFDlufNo',
+                    events: {
+                      'onReady': onPlayerReady,
+                      'onStateChange': onPlayerStateChange
+                    }
+                  });
+
+                  player2 = new YT.Player('test2', {
+                    height: '315',
+                    width: '100%',
+                    videoId: 'l-3OlCgaoos',
+                    events: {
+                      'onReady': onPlayerReady,
+                      'onStateChange': onPlayerStateChange
+                    }
+                  });
+
+
+                  player3 = new YT.Player('test3', {
+                    height: '315',
+                    width: '100%',
+                    videoId: 'UWAx0AhjNKU',
+                    events: {
+                      'onReady': onPlayerReady,
+                      'onStateChange': onPlayerStateChange
+                    }
+                  });
+                }
+
+                function onPlayerReady () {
+
+                }
+
+                function onPlayerStateChange () {
+
+                }
+
+                
+				$(function() {			
+
+					//Enable swiping...
+					$(".test-layer").swipe( {
+						swipeStatus:function(event, phase, direction, distance, duration, fingers)
+						{
+
+                            // 左右のスワイプ
+							if (direction === 'right') {
+                                $(this).prev().css('transform', 'translateX('+ distance +'%) rotate('+ distance +'deg)');
+                            } else {
+                                $(this).prev().css('transform', 'translateX('+ -1*distance +'%) rotate('+ -1*distance +'deg)');
+                            }
+
+							//Here we can check the:
+							//phase : 'start', 'move', 'end', 'cancel'
+							//direction : 'left', 'right', 'up', 'down'
+							//distance : Distance finger is from initial touch point in px
+							//duration : Length of swipe in MS 
+							//fingerCount : the number of fingers used
+
+                            // スワイプが大きいなら動画を消す
+							if (phase!="cancel" && phase!="end") {
+                                if (distance<30) {
+                                } else {
+                                    $(this).prev().fadeOut("slow", function () {
+                                        $(this).remove();
+                                    });
+									str +="Threshold reached <h3>Swipe handler will be triggered if you release at this point.</h3>"
+                                }
+							}
+							
+						},
+						threshold:200,
+						maxTimeThreshold:5000,
+						fingers:'all'
+					});
+
+                    $(".test1-wrapper").on("mousedown", function () {
+                        $(this).find('.box').css('background-color', 'red');
+                        player.playVideo();
+                    });
+
+                    $(".test2-wrapper").on("mousedown", function () {
+                        $(this).find('.box').css('background-color', 'red');
+                        player2.playVideo();
+                    });
+
+                    $(".test3-wrapper").on("mousedown", function () {
+                        $(this).find('.box').css('background-color', 'red');
+                        player3.playVideo();
+                    });
+				});
+			</script>
+			
+			<div class="test-wrappers">
+                <div class="test1-wrapper">
+                    <div id="test1" class="box">
+                    </div>
+                    <div class="test-layer">
+                    </div>
+                </div>
+
+                <div class="test2-wrapper">
+                    <div id="test2" class="box">
+                    </div>
+                    <div class="test-layer">
+                    </div>
+                </div>
+
+                <div class="test3-wrapper">
+                    <div id="test3" class="box">
+                    </div>
+                    <div class="test-layer">
+                    </div>
+                </div>
+            </div>
+		</div>
+   </body>
+</html>
