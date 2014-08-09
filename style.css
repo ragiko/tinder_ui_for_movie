@@ -1,0 +1,26 @@
+.list .row {
+	border-bottom: solid 2px #ecf0f1;
+}
+
+.list img {
+	border-radius: 300px;        /* CSS3草案 */  
+  -webkit-border-radius: 300px;    /* Safari,Google Chrome用 */  
+  -moz-border-radius: 300px;   /* Firefox用 */  
+  width: 80%;
+}
+
+.list p {
+	font-size: 25px;
+}
+
+.list a.row-inner {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	display: block;
+	overflow: hidden;
+}
+
+.container.main {
+	padding-top: 55px;
+}
+
