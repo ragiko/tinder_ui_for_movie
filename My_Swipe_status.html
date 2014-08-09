@@ -15,8 +15,15 @@
         <title>touchSwipe</title>
 
         <style>
+
+            ul {
+               list-style:none;
+               margin: 0;
+            }
+
             .test-wrappers {
                 position: relative;
+                height: 350px;
             }
 
             .test1-wrapper,
@@ -68,7 +75,11 @@
             }
 
             .like-or-not > * {
+            }
+
+            .like-or-not > ul li {
                 width: 50%;
+                float: left;
             }
 
         </style>
@@ -89,7 +100,6 @@
                 var player2;
                 var player3;
                 var player4;
-                
 
                 var videoIds = [
                     'QZ1poicuB2s',
@@ -165,6 +175,9 @@
                 
 				$(function() {			
 
+                    var likeSwipeCount = 1;
+                    var notLikeSwipeCount = 1;
+
 					//Enable swiping...
 					$(".test-layer").swipe( {
 						swipeStatus:function(event, phase, direction, distance, duration, fingers)
@@ -191,10 +204,17 @@
 
                                 } else {
 
-                                    var $nextTestWrapper = $(this).parent().next();
-                                    $nextTestWrapper.mousedown();
+                                    // 次の動画の再生
+                                    $(this).parent().next().mousedown();
 
                                     $(this).prev().fadeOut("slow", function () {
+                                        // 左右のスワイプ回数カウント
+                                        if (direction === 'right') {
+                                            $(".like span").text(likeSwipeCount++);
+                                        } else {
+                                            $(".dont-like span").text(notLikeSwipeCount++);
+                                        }
+
                                         $(this).remove();
                                     });
 
@@ -275,8 +295,10 @@
             </div>
 
             <div class="like-or-not">
-                <div class="like">count: <span></span></div>
-                <div class="dont-like">count: <span></span></div>
+                <ul>
+                    <li class="like">like: <span>0</span></li>
+                    <li class="dont-like">not like: <span>0</span></li>
+                </ul>
             </div>
 
 		</div>
