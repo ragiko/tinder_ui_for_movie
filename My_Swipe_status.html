@@ -90,17 +90,22 @@
 			
 			<script id='code_1'>
 
+                // 変更点
+                // × playerの追加
+                // × htmlのジェネレート
+                // playのロジック
+                // object
+                // for書くとPlayが見つからないバグ
+                // バインドが遅い？
+                // http://okwave.jp/qa/q7338986.html
+
                 var tag = document.createElement('script');
 
                 tag.src = "https://www.youtube.com/iframe_api";
                 var firstScriptTag = document.getElementsByTagName('script')[0];
                 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-                var player;
-                var player2;
-                var player3;
-                var player4;
-
+                // videoの設定
                 var videoIds = [
                     'QZ1poicuB2s',
                     'VZKMaFR2mtU',
@@ -109,76 +114,79 @@
                     'I55sHty3h6I'
                 ]
 
+                var players = [];
+
                 function onYouTubeIframeAPIReady() {
-                  player = new YT.Player('test1', {
-                    height: '315',
-                    width: '100%',
-                    videoId: videoIds[0],
-                    events: {
-                      'onReady': onPlayerReady,
-                      'onStateChange': onPlayerStateChange
+                    for (var i = 0; i < videoIds.length; i++ ) {
+                        players.push(makePlayer('test' + (i+1), videoIds[i]));
                     }
-                  });
+                }
 
-                  player2 = new YT.Player('test2', {
-                    height: '315',
-                    width: '100%',
-                    videoId: videoIds[1],
-                    events: {
-                      'onReady': onPlayerReady,
-                      'onStateChange': onPlayerStateChange
-                    }
-                  });
+                function makePlayer (id, videoId) {
 
+                    var player = new YT.Player(id, {
+                        height: '315',
+                        width: '100%',
+                        videoId: videoId,
+                        events: {
+                          'onReady': onPlayerReady,
+                          'onStateChange': onPlayerStateChange
+                        },
+                    });
 
-                  player3 = new YT.Player('test3', {
-                    height: '315',
-                    width: '100%',
-                    videoId: videoIds[2],
-                    events: {
-                      'onReady': onPlayerReady,
-                      'onStateChange': onPlayerStateChange
-                    }
-                  });
+                    return player
+                }
 
-                  player4 = new YT.Player('test4', {
-                    height: '315',
-                    width: '100%',
-                    videoId: videoIds[3],
-                    events: {
-                      'onReady': onPlayerReady,
-                      'onStateChange': onPlayerStateChange
-                    }
-                  });
-
-                  player5 = new YT.Player('test5', {
-                    height: '315',
-                    width: '100%',
-                    videoId: videoIds[4],
-                    events: {
-                      'onReady': onPlayerReady,
-                      'onStateChange': onPlayerStateChange
-                    }
-                  });
-
+                function onYouTubePlayerReady () {
 
                 }
 
-                function onPlayerReady () {
+                var testWrapperCount = 0
 
+                // 動画を読み込んだ後
+                function onPlayerReady(event) {
+
+                    // testWrapperCount++;
+
+                    // console.log(players);
+
+                    // // 全てのプレイヤーを読み込んだら
+                    // if (testWrapperCount == videoIds.length ) {
+                    //     for (var i = 0; i < videoIds.length; i++ ) {
+                    //         $('.test'+(i+1)+'-wrapper').on("mousedown", function () {
+                    //             $(this).find('.box').css('background-color', 'red');
+                    //             players[i].playVideo();
+                    //         });
+                    //     }
+                    // }
                 }
 
                 function onPlayerStateChange () {
 
                 }
 
-                
 				$(function() {			
 
+                    // HTMLの自動生成
+                    var html = ""
+
+                    for (var i = 0; i < videoIds.length; i++ ) {
+                        html += 
+                        '<div class="test'+(i+1)+'-wrapper">'+
+                            '<div id="test'+(i+1)+'" class="box">'+
+                            '</div>'+
+                            '<div class="test-layer">'+
+                            '</div>'+
+                        '</div>';
+                    }
+
+                    $(".test-wrappers").html(html);
+
+                    // LIKE or NON LIKE の回数
                     var likeSwipeCount = 1;
                     var notLikeSwipeCount = 1;
 
-					//Enable swiping...
+					// Enable swiping...
 					$(".test-layer").swipe( {
 						swipeStatus:function(event, phase, direction, distance, duration, fingers)
 						{
@@ -189,13 +197,6 @@
                             } else {
                                 $(this).prev().css('transform', 'translateX('+ -1*distance +'%) rotate('+ -1*distance +'deg)');
                             }
-
-							//Here we can check the:
-							//phase : 'start', 'move', 'end', 'cancel'
-							//direction : 'left', 'right', 'up', 'down'
-							//distance : Distance finger is from initial touch point in px
-							//duration : Length of swipe in MS 
-							//fingerCount : the number of fingers used
 
                             // スワイプが大きいなら動画を消す
 							if (phase!="cancel" && phase!="end") {
@@ -208,6 +209,7 @@
                                     $(this).parent().next().mousedown();
 
                                     $(this).prev().fadeOut("slow", function () {
+
                                         // 左右のスワイプ回数カウント
                                         if (direction === 'right') {
                                             $(".like span").text(likeSwipeCount++);
@@ -227,72 +229,36 @@
 						fingers:'all'
 					});
 
+                    
                     $(".test1-wrapper").on("mousedown", function () {
                         $(this).find('.box').css('background-color', 'red');
-                        player.playVideo();
+                        players[0].playVideo();
                     });
 
                     $(".test2-wrapper").on("mousedown", function () {
                         $(this).find('.box').css('background-color', 'red');
-                        player2.playVideo();
+                        players[1].playVideo();
                     });
 
                     $(".test3-wrapper").on("mousedown", function () {
                         $(this).find('.box').css('background-color', 'red');
-                        player3.playVideo();
+                        players[2].playVideo();
                     });
 
                     $(".test4-wrapper").on("mousedown", function () {
                         $(this).find('.box').css('background-color', 'red');
-                        player4.playVideo();
+                        players[3].playVideo();
                     });
 
                     $(".test5-wrapper").on("mousedown", function () {
                         $(this).find('.box').css('background-color', 'red');
-                        player5.playVideo();
+                        players[4].playVideo();
                     });
 
 				});
 			</script>
 			
-			<div class="test-wrappers">
-                <div class="test1-wrapper">
-                    <div id="test1" class="box">
-                    </div>
-                    <div class="test-layer">
-                    </div>
-                </div>
-
-                <div class="test2-wrapper">
-                    <div id="test2" class="box">
-                    </div>
-                    <div class="test-layer">
-                    </div>
-                </div>
-
-                <div class="test3-wrapper">
-                    <div id="test3" class="box">
-                    </div>
-                    <div class="test-layer">
-                    </div>
-                </div>
-
-                <div class="test4-wrapper">
-                    <div id="test4" class="box">
-                    </div>
-                    <div class="test-layer">
-                    </div>
-                </div>
-
-                <div class="test5-wrapper">
-                    <div id="test5" class="box">
-                    </div>
-                    <div class="test-layer">
-                    </div>
-                </div>
-
-                
-            </div>
+			<div class="test-wrappers"></div>
 
             <div class="like-or-not">
                 <ul>
